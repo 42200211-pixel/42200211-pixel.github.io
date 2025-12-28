@@ -1,0 +1,10 @@
+# Requirements for HMAPPO Warehouse Robot Optimization
+# Python >= 3.8
+
+# Core dependencies
+torch>=1.9.0
+numpy>=1.20.0
+
+# Optional: For visualization and logging
+# matplotlib>=3.4.0
+# tensorboard>=2.6.0
