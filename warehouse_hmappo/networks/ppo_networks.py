@@ -265,11 +265,10 @@ class ActorCriticNetwork(nn.Module):
         self.apply(lambda m: init_weights(m, gain=np.sqrt(2)))
         
         # Small initialization for the final policy output layer
-        # Only apply to the last Linear layer in actor_head
-        for module in reversed(list(self.actor_head.modules())):
-            if isinstance(module, nn.Linear):
-                init_weights(module, gain=0.01)
-                break
+        # The actor_head is constructed with the final Linear layer at the end
+        # Access it directly for clarity rather than iterating through modules
+        if isinstance(self.actor_head[-1], nn.Linear):
+            init_weights(self.actor_head[-1], gain=0.01)
         
     def forward(
         self,
