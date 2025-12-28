@@ -220,8 +220,8 @@ class WarehouseLayout:
             self._generate_sorting_area()
             
             return True
-        except Exception as e:
-            # Rollback on error
+        except (ValueError, RuntimeError, IndexError) as e:
+            # Rollback on specific expected errors during layout generation
             self.Z = old_Z
             self.shelves = []
             self.sorting_positions = []

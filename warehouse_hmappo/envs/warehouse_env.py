@@ -59,6 +59,7 @@ class Robot:
     total_deliveries: int = 0
     collision_count: int = 0
     wait_count: int = 0
+    _delivery_this_step: bool = False  # Flag for reward calculation
 
 
 @dataclass
@@ -485,6 +486,7 @@ class WarehouseEnv:
             elif robot.state == RobotState.DELIVERING:
                 # Complete delivery
                 robot.total_deliveries += 1
+                robot._delivery_this_step = True  # Flag for reward calculation
                 self.metrics.total_deliveries += 1
                 self.metrics.travel_times.append(robot.steps_since_task)
                 
@@ -681,10 +683,11 @@ class WarehouseEnv:
             # Step penalty
             reward -= 0.01
             
-            # Delivery reward (check if just completed)
-            if robot.state == RobotState.MOVING_TO_PICKUP and robot.steps_since_task == 1:
-                # Just started new task after delivery
+            # Delivery reward - track deliveries made this step
+            # Check total deliveries change since this is updated in _check_task_completion
+            if hasattr(robot, '_delivery_this_step') and robot._delivery_this_step:
                 reward += 10.0
+                robot._delivery_this_step = False
             
             # Collision penalty
             if had_collision:

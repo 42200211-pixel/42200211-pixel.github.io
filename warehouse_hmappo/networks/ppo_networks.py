@@ -264,10 +264,12 @@ class ActorCriticNetwork(nn.Module):
         # Initialize weights
         self.apply(lambda m: init_weights(m, gain=np.sqrt(2)))
         
-        # Small initialization for policy output
-        for module in self.actor_head:
+        # Small initialization for the final policy output layer
+        # Only apply to the last Linear layer in actor_head
+        for module in reversed(list(self.actor_head.modules())):
             if isinstance(module, nn.Linear):
                 init_weights(module, gain=0.01)
+                break
         
     def forward(
         self,

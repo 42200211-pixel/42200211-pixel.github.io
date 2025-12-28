@@ -376,9 +376,10 @@ class WorkerAgent:
         advantages_t = torch.FloatTensor(advantages).to(self.device)
         returns_t = torch.FloatTensor(returns).to(self.device)
         
-        # Reshape global state for centralized critic
-        # global_state should be reshaped to [batch, num_agents, obs_dim]
-        global_state_reshaped = global_state_t.view(-1, self.num_agents, self.obs_dim)
+        # Note: For centralized critic training, we would use global_state_t
+        # Here we use the actor's value head which takes local observations
+        # The centralized critic is reserved for full MAPPO implementation
+        # global_state is stored but not used in this simplified version
         
         # Training metrics
         total_policy_loss = 0

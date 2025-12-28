@@ -437,9 +437,13 @@ class HMAPPOTrainer:
             
             # Collect worker experiences
             if train_worker:
+                # Note: In full MAPPO, global_state would be concatenation of all
+                # agents' observations for centralized critic. Here we use local obs
+                # as a simplified approach that still works for decentralized execution.
+                # The centralized critic in WorkerAgent can be extended for full MAPPO.
                 self.worker.store_batch_experience(
                     local_obs=worker_obs,
-                    global_state=worker_obs,  # Use local obs as global state
+                    global_state=worker_obs,  # Simplified: local obs as global
                     actions=actions,
                     rewards=rewards["worker_rewards"],
                     next_local_obs=next_worker_obs,
